@@ -1,0 +1,11 @@
+{
+    "name": "Grade Logbook",
+    "version": "1.0.0",
+    "description": "Keep track of your grades in your classes!",
+    "manifest_version": 3,
+    "author": "Chris Veilleux",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "Grades"
+    }
+}

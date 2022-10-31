@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Logbook</title>
+    <!-- Bootstrap v5.2.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- Custom JS -->
+    <script src="scripts.js" type="text/javascript" defer></script>
+</head>
+<body>
+    <main class="container">
+        <h1>My Classes</h1>
+        <a href="add-class.html" class="btn btn-primary">Add</a>
+        
+        <table class="table">
+            <tbody id="classTable">
+
+            </tbody>
+
+            <!-- populate the table with JS -->
+            <script>
+                // get the class names from the localStorage object and save in an array
+                var classNames = [];
+                if (localStorage.getItem("classes") != null) {
+                    classNames = JSON.parse(localStorage.getItem("classes"));
+                }
+                
+                // populate the table with the class names
+                var t = "";
+
+                for (var i = 0; i < classNames.length; i++) {
+                    var tr = "<tr>";
+                    tr += "<td>"+classNames[i]+"</td>";
+                    tr += "<td><a href=\"\" class=\"btn btn-warning me-2\">View/Add Grades</a><button onclick=\"deleteClass(\'"+classNames[i]+"\')\" class=\"btn btn-danger\">Delete Class</button></td>";
+                    t += tr;
+                }
+
+                document.getElementById("classTable").innerHTML += t;
+            </script>
+        </table>
+    </main>
+</body>
+</html>

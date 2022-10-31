@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Class</title>
+    <!-- Bootstrap v5.2.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="scripts.js" type="text/javascript" defer></script>
+</head>
+<body>
+    <main class="container">
+        <h1>Add Class</h1>
+        <form onsubmit="saveClassName()" action="index.html">
+            <div class="mb-3">
+                <label for="newClassName" class="form-label">Class Name</label>
+                <input type="text" class="form-control" id="newClassName" name="newClassName" placeholder="What is your class's name?">
+            </div>
+            <input type="submit" value="Add" class="btn btn-primary">
+        </form>
+    </main>
+</body>
+</html>
