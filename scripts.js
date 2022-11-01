@@ -14,7 +14,6 @@ function saveClassName() {
     if (classes.indexOf(newClassName) === -1) {
         classes.push(newClassName);
 
-
         if (typeof(Storage) !== "undefined") {
             // set the localStorage item
             localStorage.setItem("classes", JSON.stringify(classes));
@@ -26,7 +25,7 @@ function saveClassName() {
         }
     } else {
         alert("You may not enter duplicate classes.");
-    }             
+    }
 }
 
 
@@ -36,9 +35,7 @@ function deleteClass(classToDelete) {
     
     // remove the item at that index
     if (indexToDelete > -1) {
-        
         classNames.splice(indexToDelete,1)
-        
     }
 
     // resave the array to the localStorage object

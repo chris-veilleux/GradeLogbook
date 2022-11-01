@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades</title>
+    <!-- Bootstrap v5.2.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <!-- Custom JS -->
+    <script src="scripts.js" type="text/javascript" defer></script>
+</head>
+<body>
+    <main class="container">
+        <h1 id="classNameHeading"></h1>
+        <a href="index.html" class="btn btn-primary">Back</a>
+        <table class="table">
+            <tbody id="gradesTable">
+                <thead>
+                    <tr>
+                        <th>Assessment Name</th>
+                        <th>Weight</th>
+                        <th>Grade</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <!-- populated with JS -->
+            </tbody>
+        </table>
+        <button class="btn btn-primary" onclick="addNewAssessment()">Add Assessment</button>
+    </main>
+
+    <script>
+        // get the class parameter from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        var className = urlParams.get('class');
+
+        // set the page heading
+        var pageHeading = document.getElementById("classNameHeading").innerHTML = className;
+        
+        // get the index in the classes array of the specified class. the same index will be used in the grades array
+        var classes = JSON.parse(localStorage.getItem("classes"));
+        var indexOfClass = classes.indexOf(className);
+
+        // parent array for all grades for all classes
+        var grades = [];
+
+        // populate the grades array with existing data, if it exists
+        if (localStorage.getItem("grades") != null) {
+
+            // alert("DEBUG: Grades array populated with existing data from localStorage.");
+            grades = JSON.parse(localStorage.getItem("grades"));
+            if (grades[indexOfClass] != null) {
+                // console.log(grades[indexOfClass][0]);
+
+                // populate the table if data exists
+                var t = "";
+
+                for (var i = 0; i < grades[indexOfClass].length; i++) {
+                    var tr = "<tr>";
+                    tr += "<td>"+grades[indexOfClass][i][0]+"</td>";
+                    tr += "<td>"+grades[indexOfClass][i][1]+"</td>";
+                    tr += "<td>"+grades[indexOfClass][i][2]+"</td>";
+                    tr += "<td><button onclick=\"deleteAssessment(\'"+i+"\')\" class=\"btn btn-danger\">Delete Assessment</button></td>";
+                    t += tr;
+                }
+
+                document.getElementById("gradesTable").innerHTML += t;
+            } else {
+                // grades at specific indexes are arrays that hold the assessment information
+                grades[indexOfClass] = [];
+            }
+        }
+
+        function deleteAssessment(indexToDelete) {
+            grades[indexOfClass].splice(indexToDelete, 1);
+
+            localStorage.setItem("grades", JSON.stringify(grades));
+
+            alert("Deleted.");
+            location.reload();
+        }
+
+        function addNewAssessment() {
+            // append a new row to the table, with button to save
+            var t = "<tr>";
+
+            t += "<td><input class=\"form-control\" type=\"text\" id=\"newAssessmentName\" name=\"newAssessmentName\"></td>";
+            t += "<td><input class=\"form-control\" type=\"text\" id=\"newWeight\" name=\"newWeight\"></td>";
+            t += "<td><input class=\"form-control\" type=\"text\" id=\"newGrade\" name=\"newGrade\">";
+            t += "<td><button onclick=\"saveNewAssessment()\" class=\"btn btn-primary mt-2\">Save</button></td></td>";
+
+            document.getElementById("gradesTable").innerHTML += t;
+        }
+        
+
+        function saveNewAssessment() {
+            // get the values the user entered
+            const newAssessmentName = document.getElementById('newAssessmentName').value;
+            const newWeight = document.getElementById('newWeight').value;
+            const newGrade = document.getElementById('newGrade').value;
+
+            if (newAssessmentName != "") { 
+                // add the values to the array at the appropriate index
+                grades[indexOfClass].push([newAssessmentName,newWeight,newGrade]);
+                
+                // save the new data to localStorage
+                if (typeof(Storage) !== "undefined") {
+                    // set the localStorage item
+                    localStorage.setItem("grades", JSON.stringify(grades));
+
+                    alert("Success!");
+                }
+                else {
+                    document.write("Sorry, your browser does not support Web Storage...");
+                }
+
+                // reload the page to populate the table with the new data
+                location.reload();
+            } else {
+                alert("Assessment must have a name.");
+            }
+        }
+    </script>
+</body>
+</html>

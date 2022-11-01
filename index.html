@@ -34,7 +34,7 @@
                 for (var i = 0; i < classNames.length; i++) {
                     var tr = "<tr>";
                     tr += "<td>"+classNames[i]+"</td>";
-                    tr += "<td><a href=\"\" class=\"btn btn-warning me-2\">View/Add Grades</a><button onclick=\"deleteClass(\'"+classNames[i]+"\')\" class=\"btn btn-danger\">Delete Class</button></td>";
+                    tr += "<td><a href=\"modify-grades.html?class="+classNames[i]+"\" class=\"btn btn-warning me-2\">View/Add Grades</a><button onclick=\"deleteClass(\'"+classNames[i]+"\')\" class=\"btn btn-danger\">Delete Class</button></td>";
                     t += tr;
                 }
 
