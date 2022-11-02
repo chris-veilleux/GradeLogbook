@@ -13,12 +13,16 @@
 <body>
     <main class="container">
         <h1>My Classes</h1>
-        <a href="add-class.html" class="btn btn-primary">Add</a>
-        
-        <table class="table">
-            <tbody id="classTable">
 
-            </tbody>
+        <div class="d-grid gap-2 mb-2">
+            <div class="btn-group-vertical" role="group" id="classList">
+                <!-- populate with JS -->
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            <a href="add-class.html" class="btn btn-primary">Add</a>
+        </div>
 
             <!-- populate the table with JS -->
             <script>
@@ -27,20 +31,22 @@
                 if (localStorage.getItem("classes") != null) {
                     classNames = JSON.parse(localStorage.getItem("classes"));
                 }
-                
-                // populate the table with the class names
-                var t = "";
+
+                var list = "";
 
                 for (var i = 0; i < classNames.length; i++) {
-                    var tr = "<tr>";
-                    tr += "<td>"+classNames[i]+"</td>";
-                    tr += "<td><a href=\"modify-grades.html?class="+classNames[i]+"\" class=\"btn btn-warning me-2\">View/Add Grades</a><button onclick=\"deleteClass(\'"+classNames[i]+"\')\" class=\"btn btn-danger\">Delete Class</button></td>";
-                    t += tr;
+                    var item = "";
+
+                    item += "<div class=\"btn-group d-flex\" role=\"group\">";
+                    item += "<a href=\"modify-grades.html?class="+classNames[i]+"\" class=\"btn btn-outline-primary w-100\">"+classNames[i]+"</a>";
+                    item += "<button onclick=\"deleteClass(\'"+classNames[i]+"\')\" type=\"button\" class=\"btn btn-outline-danger\">X</button>";
+                    item += "</div>";
+
+                    list += item;
                 }
 
-                document.getElementById("classTable").innerHTML += t;
+                document.getElementById("classList").innerHTML += list;
             </script>
-        </table>
     </main>
 </body>
 </html>

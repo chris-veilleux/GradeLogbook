@@ -14,11 +14,12 @@
     <main class="container">
         <h1 id="classNameHeading"></h1>
         <a href="index.html" class="btn btn-primary">Back</a>
+        <!-- <button class="btn btn-warning" onclick="editGrades">Edit</button> -->
         <table class="table">
             <tbody id="gradesTable">
                 <thead>
                     <tr>
-                        <th>Assessment Name</th>
+                        <th>Name</th>
                         <th>Weight</th>
                         <th>Grade</th>
                         <th></th>
@@ -27,7 +28,9 @@
                 <!-- populated with JS -->
             </tbody>
         </table>
-        <button class="btn btn-primary" onclick="addNewAssessment()">Add Assessment</button>
+        <button class="btn btn-primary mb-3" onclick="addNewAssessment()">Add Assessment</button>
+        <div class="border p-3" id="desiredGrade"></div>
+        
     </main>
 
     <script>
@@ -42,43 +45,96 @@
         var classes = JSON.parse(localStorage.getItem("classes"));
         var indexOfClass = classes.indexOf(className);
 
-        // parent array for all grades for all classes
-        var grades = [];
+        // // if class is not found, redirect to home page
+        // if (indexOfClass === -1) {
+        //     location = "index.html";
+        // } else {
 
-        // populate the grades array with existing data, if it exists
-        if (localStorage.getItem("grades") != null) {
+            // parent array for all grades for all classes
+            var grades = [];
 
-            // alert("DEBUG: Grades array populated with existing data from localStorage.");
-            grades = JSON.parse(localStorage.getItem("grades"));
-            if (grades[indexOfClass] != null) {
-                // console.log(grades[indexOfClass][0]);
+            // populate the grades array with existing data, if it exists
+            if (localStorage.getItem("grades") != null) {
+                grades = JSON.parse(localStorage.getItem("grades"));
+                if (grades[indexOfClass] != null) {
+                    // console.log(grades[indexOfClass][0]);
 
-                // populate the table if data exists
-                var t = "";
+                    // populate the table if data exists
+                    var t = "";
 
-                for (var i = 0; i < grades[indexOfClass].length; i++) {
-                    var tr = "<tr>";
-                    tr += "<td>"+grades[indexOfClass][i][0]+"</td>";
-                    tr += "<td>"+grades[indexOfClass][i][1]+"</td>";
-                    tr += "<td>"+grades[indexOfClass][i][2]+"</td>";
-                    tr += "<td><button onclick=\"deleteAssessment(\'"+i+"\')\" class=\"btn btn-danger\">Delete Assessment</button></td>";
-                    t += tr;
+                    var weightTotal = 0;
+                    var gradeTotal = 0;
+
+                    for (var i = 0; i < grades[indexOfClass].length; i++) {
+                        var tr = "<tr>";
+                        // tr += "<td><input type=\"text\" class=\"form-control\" value=\""+grades[indexOfClass][i][0]+"\"></input></td>";
+                        tr += "<td>"+grades[indexOfClass][i][0]+"</td>";
+                        tr += "<td>"+grades[indexOfClass][i][1]+"%</td>";
+                        tr += "<td>"+grades[indexOfClass][i][2]+"%</td>";
+                        tr += "<td><button onclick=\"deleteAssessment(\'"+i+"\')\" class=\"btn btn-sm btn-danger\">X</button></td>";
+                        tr += "</tr>";
+                        t += tr;
+
+                        var weight = parseInt(grades[indexOfClass][i][1]);
+                        var grade = parseInt(grades[indexOfClass][i][2]);
+
+                        weightTotal += weight;
+
+                        gradeTotal += (weight*grade);
+                        // gradeTotal += grade;
+                    }
+
+                    var weightedGradeTotal = Math.round((gradeTotal /= weightTotal) * 100) / 100;
+
+                    if (weightTotal === 100) {
+                        t += "<tr class=\"border bg-success text-light\"><td>FINAL GRADE</td><td></td><td>"+weightedGradeTotal+"%</td><td></td></tr>";
+                    } else {
+                        t += "<tr class=\"border bg-warning\"><td>AVERAGE GRADE</td><td>(="+weightTotal+"%)</td><td>"+weightedGradeTotal+"%</td><td></td></tr>";
+                    }
+
+                    document.getElementById("gradesTable").innerHTML += t;
+
+                    // desired grade calculator
+                    var dg = "";
+
+                    // dg += "<div class=\"input-group\">";
+
+                    dg += "What is your desired grade for this course?";
+                    dg += "<input onchange=\"updateDesiredGrade()\" type=\"text\" class=\"form-control\" id=\"desiredGradeInput\"></input>";
+                    dg += "You will need a <span id=\"neededGrade\">?</span> in your remaining assessments to achieve your desired grade.";
+
+                    // dg += "</div>";
+
+                    document.getElementById("desiredGrade").innerHTML = dg;
+
+
+
+                } else {
+                    // grades at specific indexes are arrays that hold the assessment information
+                    grades[indexOfClass] = [];
                 }
-
-                document.getElementById("gradesTable").innerHTML += t;
-            } else {
-                // grades at specific indexes are arrays that hold the assessment information
-                grades[indexOfClass] = [];
             }
+        // }
+
+        function updateDesiredGrade() {
+            var goal = document.getElementById("desiredGradeInput").value;
+
+            var neededGrade = (goal - weightedGradeTotal * (weightTotal/100)) / ((100 - weightTotal)/100);
+
+            neededGrade = Math.round((neededGrade * 100)) / 100;
+
+            document.getElementById("neededGrade").innerHTML = neededGrade+"%";
         }
 
         function deleteAssessment(indexToDelete) {
-            grades[indexOfClass].splice(indexToDelete, 1);
+            var confirmDelete = confirm("Are you sure you want to delete?");
+            if (confirmDelete) {
+                grades[indexOfClass].splice(indexToDelete, 1);
 
-            localStorage.setItem("grades", JSON.stringify(grades));
+                localStorage.setItem("grades", JSON.stringify(grades));
 
-            alert("Deleted.");
-            location.reload();
+                location.reload();
+            }
         }
 
         function addNewAssessment() {
@@ -109,7 +165,6 @@
                     // set the localStorage item
                     localStorage.setItem("grades", JSON.stringify(grades));
 
-                    alert("Success!");
                 }
                 else {
                     document.write("Sorry, your browser does not support Web Storage...");

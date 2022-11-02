@@ -29,18 +29,29 @@ function saveClassName() {
 }
 
 
+
 function deleteClass(classToDelete) {
-    // get the index of the item to be removed from the array
-    var indexToDelete = classNames.indexOf(classToDelete);
-    
-    // remove the item at that index
-    if (indexToDelete > -1) {
-        classNames.splice(indexToDelete,1)
+    // confirm deletion
+    var confirmDelete = confirm("Are you sure you want to delete "+classToDelete+"?");
+    if (confirmDelete) {
+
+        // get the index of the item to be removed from the array
+        var indexToDelete = classNames.indexOf(classToDelete);   
+        
+        // remove the item at that index
+        if (indexToDelete > -1) {
+            classNames.splice(indexToDelete,1)
+
+            // delete the associated grades data for the class
+            var grades = [];
+            grades = JSON.parse(localStorage.getItem("grades"));
+            grades.splice(indexToDelete,1);
+            localStorage.setItem("grades", JSON.stringify(grades));
+        }
+
+        // resave the array to the localStorage object
+        localStorage.setItem("classes", JSON.stringify(classNames));
     }
 
-    // resave the array to the localStorage object
-    localStorage.setItem("classes", JSON.stringify(classNames));
-    
-    alert(classToDelete+" deleted.");
     location.reload();
 }
